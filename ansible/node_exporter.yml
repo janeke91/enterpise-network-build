@@ -1,0 +1,23 @@
+---
+- name: Install node_exporter on the monitoring host
+  hosts: monitoring_hosts
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Install prometheus-node-exporter
+      ansible.builtin.apt:
+        name: prometheus-node-exporter
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Ensure the service is enabled and running
+      ansible.builtin.service:
+        name: prometheus-node-exporter
+        state: started
+        enabled: true
+
+    - name: Wait until port 9100 is listening
+      ansible.builtin.wait_for:
+        port: 9100
+        timeout: 30

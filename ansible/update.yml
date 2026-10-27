@@ -1,0 +1,47 @@
+---
+- name: Update Debian hosts
+  hosts: linux
+  become: true
+  serial: 1
+  gather_facts: false
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Count pending upgrades
+      ansible.builtin.shell: "apt-get -s upgrade | grep -c '^Inst' || true"
+      register: pending
+      changed_when: false
+      check_mode: false
+
+    - name: Upgrade installed packages
+      ansible.builtin.apt:
+        upgrade: safe
+
+    - name: Get running kernel
+      ansible.builtin.command: uname -r
+      register: running_kernel
+      changed_when: false
+      check_mode: false
+
+    - name: Get latest installed kernel
+      ansible.builtin.shell: "ls -1 /boot/vmlinuz-* | sed 's|/boot/vmlinuz-||' | sort -V | tail -1"
+      register: latest_kernel
+      changed_when: false
+      check_mode: false
+
+    - name: Save summary
+      ansible.builtin.set_fact:
+        update_summary: "{{ pending.stdout | trim }} package(s) upgraded, reboot {{ 'REQUIRED' if running_kernel.stdout != latest_kernel.stdout else 'not needed' }}"
+
+- name: Final report
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Show report
+      ansible.builtin.debug:
+        msg: "{{ item }}: {{ hostvars[item].update_summary | default('NO DATA - host failed or unreachable') }}"
+      loop: "{{ groups['linux'] }}"

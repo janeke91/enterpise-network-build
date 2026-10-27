@@ -1,0 +1,52 @@
+---
+- name: Security audit (read-only)
+  hosts: linux
+  become: true
+  gather_facts: false
+  vars:
+    expected_ports:
+      test-infra: [22, 9100]
+      dmz: [22, 9100]
+      monitoring: [22, 3000, 9090, 9100]
+  tasks:
+    - name: Read effective sshd configuration
+      ansible.builtin.command: /usr/sbin/sshd -T
+      register: sshd_cfg
+      changed_when: false
+      check_mode: false
+
+    - name: Collect listening ports reachable from the network
+      ansible.builtin.shell: >-
+        ss -H -tuln | awk '{print $5}' | grep -v '^127\.' | grep -v '^\[::1\]'
+        | sed 's/.*://' | sort -un
+      register: listening
+      changed_when: false
+      check_mode: false
+
+    - name: Count pending security updates
+      ansible.builtin.shell: "apt-get -s upgrade | grep -i '^Inst' | grep -ci security || true"
+      register: sec_updates
+      changed_when: false
+      check_mode: false
+
+    - name: Evaluate findings
+      ansible.builtin.set_fact:
+        ssh_findings: "{{ (['PermitRootLogin yes'] if 'permitrootlogin yes' in sshd_cfg.stdout_lines else []) + (['PasswordAuthentication yes'] if 'passwordauthentication yes' in sshd_cfg.stdout_lines else []) }}"
+        # 68/UDP and 546/UDP are DHCP client sockets, accepted on purpose
+        ports_unexpected: "{{ listening.stdout_lines | map('int') | list | difference(expected_ports[inventory_hostname] + [68, 546]) }}"
+        ports_missing: "{{ expected_ports[inventory_hostname] | difference(listening.stdout_lines | map('int') | list) }}"
+        sec_pending: "{{ sec_updates.stdout | trim | int }}"
+
+    - name: Save summary
+      ansible.builtin.set_fact:
+        audit_summary: "{{ 'FAIL' if (ssh_findings | length + ports_unexpected | length + ports_missing | length + sec_pending | int) > 0 else 'PASS' }} | ssh: {{ ssh_findings or 'ok' }} | unexpected ports: {{ ports_unexpected or 'none' }} | missing ports: {{ ports_missing or 'none' }} | security updates pending: {{ sec_pending }}"
+
+- name: Audit report
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Show report
+      ansible.builtin.debug:
+        msg: "{{ item }}: {{ hostvars[item].audit_summary | default('NO DATA - host failed or unreachable') }}"
+      loop: "{{ groups['linux'] }}"
