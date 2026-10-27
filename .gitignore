@@ -1,0 +1,24 @@
+# Never commit firewall exports or backups (they contain hashes and keys)
+config.xml
+config-*.xml
+*.xml.bak
+*.tar
+*.tar.gz
+*.vma*
+*.zst
+
+# Secrets
+.env
+*.key
+*.pem
+*.conf.secret
+*wg*.conf
+*password*
+*token*
+
+# Raw screenshots before masking the public IP
+screenshots/raw/
+
+# Editor / OS
+.DS_Store
+*.swp
