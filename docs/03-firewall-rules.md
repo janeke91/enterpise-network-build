@@ -15,7 +15,7 @@
 |---|---|---|
 | RFC1918 | Network | 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 |
 | web_ports | Port | 80, 443 |
-| ADMIN_HOSTS | Host | 10.10.10.10 (admin laptop), 10.10.10.20 (ansible-01) |
+| ADMIN_HOSTS | Host | 10.10.10.10 (admin laptop), 10.10.10.20 (ansible) |
 | NODE_EXPORTERS | Host | 10.10.10.3, 10.10.20.10, 10.10.30.10, 10.10.40.1 |
 
 ## Pattern
@@ -24,7 +24,7 @@ For each restricted zone the order is: narrow *pass* exceptions, then a logged *
 
 ## MGMT (VLAN 10)
 
-Admin workstation: 10.10.10.10 (static DHCP mapping). Ansible control node `ansible-01`: 10.10.10.20. Proxmox: 10.10.10.3. Rules 4 and 5 use the alias `ADMIN_HOSTS`, so Ansible reaches the VMs on TCP/22 only, like an administrator.
+Admin workstation: 10.10.10.10 (static DHCP mapping). Ansible control node `ansible`: 10.10.10.20. Proxmox: 10.10.10.3. Rules 4 and 5 use the alias `ADMIN_HOSTS`, so Ansible reaches the VMs on TCP/22 only, like an administrator.
 
 | # | Action | Proto | Source | Destination | Port | Note |
 |---|---|---|---|---|---|---|

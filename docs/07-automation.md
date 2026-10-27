@@ -2,8 +2,8 @@
 
 ## Design
 
-- **Control node:** `ansible-01` (10.10.10.20), a small Debian VM in MGMT (VLAN 10). It holds the SSH key that opens every managed host, so it is treated like the hypervisor: it lives only in the management zone.
-- **Firewall:** MGMT rules 4 and 5 use the alias `ADMIN_HOSTS` (admin laptop and `ansible-01`) as source. Everything else stays unchanged: Ansible reaches the VMs only on TCP/22, like an administrator.
+- **Control node:** `ansible` (10.10.10.20), a small Debian VM in MGMT (VLAN 10). It holds the SSH key that opens every managed host, so it is treated like the hypervisor: it lives only in the management zone.
+- **Firewall:** MGMT rules 4 and 5 use the alias `ADMIN_HOSTS` (admin laptop and `ansible`) as source. Everything else stays unchanged: Ansible reaches the VMs only on TCP/22, like an administrator.
 - **Authentication:** SSH key (ed25519) protected by a passphrase, loaded into `ssh-agent` per session. Privilege escalation through `sudo` with the password entered at run time (`--ask-become-pass`). No passwords or keys are stored in this repository.
 - **Inventory:** `ansible/inventory.ini`. Groups are named `*_hosts` to avoid clashing with host names.
 
