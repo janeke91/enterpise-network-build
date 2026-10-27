@@ -9,9 +9,12 @@ Prometheus (pull model) runs in Docker on the `monitoring` VM (10.10.40.10, VLAN
 | proxmox | 10.10.10.3:9100 | |
 | vms | 10.10.20.10:9100 | test-infra |
 | vms | 10.10.30.10:9100 | dmz |
+| vms | 10.10.40.10:9100 | monitoring |
 | pfsense | 10.10.40.1:9100 | pfsense |
 
 Configuration: [configs/monitoring/prometheus.yml](../configs/monitoring/prometheus.yml) and [compose.yaml](../configs/monitoring/compose.yaml).
+
+The monitoring VM scrapes itself: `node_exporter` is installed there by `ansible/node_exporter.yml`. A security audit found this gap (the monitoring server was not monitored); see [07 Automation](07-automation.md).
 
 ## Grafana
 
