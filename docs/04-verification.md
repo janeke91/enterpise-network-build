@@ -1,6 +1,6 @@
 # 04. Verification
 
-Every rule is tested from the zone it applies to. Results are from the built lab. Add screenshots to `../screenshots/` and link them in the Evidence column.
+Every rule is tested from the zone it applies to.
 
 | # | From | Test | Expected | Result | Evidence |
 |---|---|---|---|---|---|
