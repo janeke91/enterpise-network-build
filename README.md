@@ -1,4 +1,4 @@
-# Enterprise Network Segmentation & Firewall Lab
+# Enterprise Network with Segmentation & Firewall
 
 A small-office network built on real hardware: a pfSense firewall, a VLAN-capable managed switch and a Proxmox hypervisor. The lab implements zone-based segmentation with least-privilege firewall policy, centralized monitoring and documented verification of every rule.
 
@@ -11,26 +11,6 @@ A small-office network built on real hardware: a pfSense firewall, a VLAN-capabl
 
 ## Topology
 
-```mermaid
-flowchart TB
-    Internet((Internet)) --- ISP["ISP router"]
-    ISP --- FW
-
-    subgraph FWBOX["pfSense CE 2.7.2 (Celeron J1900, 4x Intel I226-V)"]
-        FW["igc0 WAN (DHCP from the ISP router)<br/>igc1 trunk, VLAN 10/20/30/40"]
-    end
-
-    FW ==>|"802.1Q trunk"| SW["Tenda TEG2205D<br/>managed switch"]
-
-    SW ==>|"802.1Q trunk"| PVE
-    SW ---|"access, VLAN 10"| LAP["Admin laptop<br/>10.10.10.10"]
-
-    subgraph PVE["Proxmox VE host 10.10.10.3 (vmbr0.10), VLAN-aware bridge vmbr0"]
-        V1["test-infra<br/>VLAN 20<br/>10.10.20.10"]
-        V2["dmz<br/>VLAN 30<br/>10.10.30.10"]
-        V3["monitoring<br/>VLAN 40<br/>10.10.40.10<br/>Prometheus + Grafana"]
-    end
-```
 
 ## Security zones
 
