@@ -63,7 +63,7 @@ pfSense CE 2.7.2, Proxmox VE, Debian 13, Docker, Prometheus, Grafana, node_expor
 
 - [x] Replace MGMT *pass any* with explicit rules
 - [ ] Active Directory (Windows Server, domain `corp.lab`) in INFRA
-- [x] Ansible control VM (`ansible-01`, MGMT): update and audit playbooks with reports
+- [x] Ansible control VM (`ansible`, MGMT): update and audit playbooks with reports
 - [ ] Ansible: hardening (SSH key-only), Lynis score, backup playbooks
 - [ ] Backup storage on a separate HDD (pending USB-SATA adapter)
 - [ ] Admin WireGuard remote access into MGMT
