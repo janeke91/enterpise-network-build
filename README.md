@@ -11,6 +11,7 @@ A small-office network built on real hardware: a pfSense firewall, a VLAN-capabl
 
 ## Topology
 
+![Network topology: pfSense, Tenda switch, Proxmox with VLAN-aware bridge and VMs](diagrams/topology.png)
 
 ## Security zones
 
@@ -33,7 +34,7 @@ A small-office network built on real hardware: a pfSense firewall, a VLAN-capabl
 
 | From \ To | MGMT | INFRA | DMZ | MONITORING | Internet |
 |---|---|---|---|---|---|
-| MGMT | n/a | SSH only, from admin PC and ansible-01 | SSH only, from admin PC and ansible-01 | SSH, Grafana, Prometheus (admin PC) | web (80/443), NTP |
+| MGMT | n/a | SSH only, from admin PC and ansible | SSH only, from admin PC and ansible | SSH, Grafana, Prometheus (admin PC) | web (80/443), NTP |
 | INFRA | blocked | n/a | blocked | blocked | allowed |
 | DMZ | blocked | blocked | n/a | blocked | web (80/443), NTP |
 | MONITORING | blocked | 9100 only | 9100 only | n/a | web (80/443), NTP |
