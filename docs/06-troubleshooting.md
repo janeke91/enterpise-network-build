@@ -55,6 +55,24 @@ Real problems met while building the lab. Each entry: symptom, diagnosis, root c
 - **Effect:** very long boot with filesystem checks.
 - **Mitigation:** UPS recommended; AutoConfigBackup protects the configuration.
 
+## 10. Switching a VM from DHCP to a static address
+
+- **Symptom:** SSH to another VLAN failed although the new static address looked correct; later `apt` failed with "Temporary failure resolving".
+- **Root cause (two parts):**
+  1. The interface kept the old DHCP address next to the static one. Outgoing packets used the first address, which was not in the firewall alias, so the firewall dropped them.
+  2. `/etc/resolv.conf` had been written by the DHCP client and contained no `nameserver` line. The `dns-nameservers` option in `/etc/network/interfaces` is ignored without the `resolvconf` package.
+- **Fix:** remove the DHCP address (or reboot), set `inet static`, write `nameserver` into `/etc/resolv.conf`.
+- **Lesson:** after changing addressing, check `ip -br a` for exactly one address and `ip route get <dst>` for the source address used.
+
+## 11. Ansible lessons
+
+- A group and a host must not share a name (`monitoring` as both): rename the groups.
+- `ERROR: unsupported locale setting`: set `LC_ALL=C.UTF-8` on the control node.
+- `Incorrect sudo password` on every host: the hidden prompt was typed in the wrong keyboard layout.
+- `Could not find the requested service` in `--check` mode: the package was not really installed in a dry run, so a service task cannot find its unit.
+- `sudo: unable to resolve host`: the hostname is missing in `/etc/hosts` (clone checklist).
+- `PLAY RECAP` hides the useful part; print an explicit per-host report as the last play.
+
 ## General method
 
 1. Is the link up and tagged correctly? (`ip link`, `bridge vlan show`)
