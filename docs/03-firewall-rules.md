@@ -15,6 +15,7 @@
 |---|---|---|
 | RFC1918 | Network | 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 |
 | web_ports | Port | 80, 443 |
+| ADMIN_HOSTS | Host | 10.10.10.10 (admin laptop), 10.10.10.20 (ansible-01) |
 | NODE_EXPORTERS | Host | 10.10.10.3, 10.10.20.10, 10.10.30.10, 10.10.40.1 |
 
 ## Pattern
@@ -23,15 +24,15 @@ For each restricted zone the order is: narrow *pass* exceptions, then a logged *
 
 ## MGMT (VLAN 10)
 
-Admin workstation: 10.10.10.10 (static DHCP mapping). Proxmox: 10.10.10.3.
+Admin workstation: 10.10.10.10 (static DHCP mapping). Ansible control node `ansible-01`: 10.10.10.20. Proxmox: 10.10.10.3. Rules 4 and 5 use the alias `ADMIN_HOSTS`, so Ansible reaches the VMs on TCP/22 only, like an administrator.
 
 | # | Action | Proto | Source | Destination | Port | Note |
 |---|---|---|---|---|---|---|
 | 1 | Pass | TCP | 10.10.10.10 | MGMT address | 443 | pfSense admin GUI |
 | 2 | Pass | TCP/UDP | MGMT subnet | MGMT address | 53 | DNS |
 | 3 | Pass | ICMP | MGMT subnet | MGMT address | n/a | Gateway ping |
-| 4 | Pass | TCP | 10.10.10.10 | 10.10.10.3 | proxmox_ports (22, 8006) | Proxmox GUI and SSH |
-| 5 | Pass | TCP | 10.10.10.10 | SSH_TARGETS | 22 | SSH to VMs |
+| 4 | Pass | TCP | ADMIN_HOSTS | 10.10.10.3 | proxmox_ports (22, 8006) | Proxmox GUI and SSH |
+| 5 | Pass | TCP | ADMIN_HOSTS | SSH_TARGETS | 22 | SSH to VMs |
 | 6 | Pass | TCP | 10.10.10.10 | 10.10.40.10 | monitoring_ports (3000, 9090) | Grafana, Prometheus |
 | 7 | Block (log) | any | MGMT subnet | RFC1918 | any | "block internal networks" |
 | 8 | Pass | TCP | MGMT subnet | any | web_ports | Updates |

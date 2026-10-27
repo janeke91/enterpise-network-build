@@ -17,6 +17,7 @@
 | Tenda switch | VLAN 1 | 10.10.10.2 |
 | Proxmox host | MGMT | 10.10.10.3 |
 | Admin laptop | MGMT | 10.10.10.10 (DHCP static mapping) |
+| ansible-01 | MGMT | 10.10.10.20 (DHCP static mapping) |
 | test-infra (VM 100) | INFRA | 10.10.20.10 |
 | dmz (VM 101) | DMZ | 10.10.30.10 |
 | monitoring (VM 102) | MONITORING | 10.10.40.10 |
