@@ -22,22 +22,5 @@ Every rule is tested from the zone it applies to. Results are from the built lab
 | 16 | Laptop (MGMT) | `ping 1.1.1.1` | No reply (no ICMP rule to internet) | Pass | |
 | 17 | All | Reboot pfSense, then Proxmox | MGMT, VMs and Grafana return without manual action | Pass | |
 
-## Useful commands
 
-```bash
-# Is a port open? (from a VM)
-nc -zv 10.10.20.10 9100
-
-# Which services listen locally?
-ss -tulpn
-
-# Frames and VLAN tags on the Proxmox uplink
-tcpdump -e -n -i nic0 vlan
-
-# Bridge state on Proxmox
-bridge vlan show
-bridge fdb show
-ip neigh
-```
-
-On pfSense: *Status > System Logs > Firewall* shows blocked traffic with the rule description. *Diagnostics > Packet Capture* sees packets before the firewall decides, so a packet visible in capture and absent in logs points to a rule problem, not a link problem.
+On pfSense: Status > System Logs > Firewall shows blocked traffic with the rule description. Diagnostics > Packet Capture sees packets before the firewall decides, so a packet visible in capture and absent in logs points to a rule problem, not a link problem.
