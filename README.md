@@ -1,6 +1,6 @@
 # Enterprise Network Segmentation & Firewall Lab
 
-I built a small-office network built on real hardware: a pfSense firewall, a VLAN-capable managed switch and a Proxmox hypervisor. The lab implements zone-based segmentation with least-privilege firewall policy, centralized monitoring and documented verification of every rule.
+A small-office network built on real hardware: a pfSense firewall, a VLAN-capable managed switch and a Proxmox hypervisor. The lab implements zone-based segmentation with least-privilege firewall policy, centralized monitoring and documented verification of every rule.
 
 ## Goals
 
@@ -13,11 +13,11 @@ I built a small-office network built on real hardware: a pfSense firewall, a VLA
 
 ```mermaid
 flowchart TB
-    Internet((Internet)) --- ISP["ISP router<br/>192.168.0.1"]
+    Internet((Internet)) --- ISP["ISP router"]
     ISP --- FW
 
     subgraph FWBOX["pfSense CE 2.7.2 (Celeron J1900, 4x Intel I226-V)"]
-        FW["igc0 WAN 192.168.0.86 (DHCP)<br/>igc1 trunk, VLAN 10/20/30/40"]
+        FW["igc0 WAN (DHCP from the ISP router)<br/>igc1 trunk, VLAN 10/20/30/40"]
     end
 
     FW ==>|"802.1Q trunk"| SW["Tenda TEG2205D<br/>managed switch"]
@@ -53,12 +53,12 @@ flowchart TB
 
 | From \ To | MGMT | INFRA | DMZ | MONITORING | Internet |
 |---|---|---|---|---|---|
-| MGMT | n/a | SSH only, from the admin PC | SSH only, from the admin PC | SSH, Grafana, Prometheus (admin PC) | web (80/443), NTP |
+| MGMT | n/a | SSH only, from admin PC and ansible-01 | SSH only, from admin PC and ansible-01 | SSH, Grafana, Prometheus (admin PC) | web (80/443), NTP |
 | INFRA | blocked | n/a | blocked | blocked | allowed |
 | DMZ | blocked | blocked | n/a | blocked | web (80/443), NTP |
 | MONITORING | blocked | 9100 only | 9100 only | n/a | web (80/443), NTP |
 
-Admin access is limited to one workstation (10.10.10.10). Proxmox is reachable on 22 and 8006 only.
+Admin access is limited to two hosts: the admin workstation (10.10.10.10) and the Ansible control node (10.10.10.20). Proxmox is reachable on 22 and 8006 only.
 
 All zones may also use the DNS resolver and answer ICMP on their own gateway address.
 
@@ -72,6 +72,7 @@ All zones may also use the DNS resolver and answer ICMP on their own gateway add
 | [04 Verification](docs/04-verification.md) | Test matrix: command, expectation, result |
 | [05 Monitoring](docs/05-monitoring.md) | Prometheus, Grafana, node_exporter |
 | [06 Troubleshooting](docs/06-troubleshooting.md) | Real problems, root causes and fixes |
+| [07 Automation](docs/07-automation.md) | Ansible control node, playbooks, design decisions |
 | [configs/](configs/) | Sanitized configuration files |
 
 ## Tech stack
@@ -82,7 +83,8 @@ pfSense CE 2.7.2, Proxmox VE, Debian 13, Docker, Prometheus, Grafana, node_expor
 
 - [x] Replace MGMT *pass any* with explicit rules
 - [ ] Active Directory (Windows Server, domain `corp.lab`) in INFRA
-- [ ] Ansible control VM (`ansible-01`, MGMT): update, audit and backup playbooks with reports
+- [x] Ansible control VM (`ansible-01`, MGMT): update and audit playbooks with reports
+- [ ] Ansible: hardening (SSH key-only), Lynis score, backup playbooks
 - [ ] Backup storage on a separate HDD (pending USB-SATA adapter)
 - [ ] Admin WireGuard remote access into MGMT
 - [ ] Suricata IDS on the DMZ

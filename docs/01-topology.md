@@ -8,13 +8,13 @@
 | Tenda TEG2205D | Managed 5-port gigabit switch, 802.1Q | Management IP 10.10.10.2 (stays in VLAN 1) |
 | Proxmox VE host | Hypervisor | 16 GB RAM, management IP 10.10.10.3 |
 | Laptop (Linux Mint) | Admin workstation | USB gigabit adapter, static mapping 10.10.10.10 |
-| ISP router | Upstream | 192.168.0.1, double NAT in front of pfSense |
+| ISP router | Upstream | double NAT in front of pfSense |
 
 ## pfSense interfaces
 
 | Interface | Role |
 |---|---|
-| igc0 | WAN, DHCP from the ISP router (192.168.0.86) |
+| igc0 | WAN, DHCP from the ISP router |
 | igc1 | Trunk to the switch. No IP of its own, parent for VLAN 10/20/30/40 |
 | igc2, igc3 | Spare |
 
