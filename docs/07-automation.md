@@ -42,6 +42,7 @@ ansible-playbook update.yml --ask-become-pass
 | UDP 68 and 546 listening | all | DHCP client sockets, accepted in the baseline (documented in the playbook) |
 | Port 9100 missing | monitoring | Real gap: the monitoring server was not monitored. Fixed with `node_exporter.yml` and a new Prometheus target |
 | A random high port seen once | monitoring | Transient socket, gone on re-check |
+| UDP 1514 listening | monitoring | Expected: Alloy syslog listener for pfSense firewall logs. Added to the audit baseline after the log pipeline was built |
 
 An audit baseline is a statement of what is expected. Fixing the baseline is only valid when the reason is written down.
 
