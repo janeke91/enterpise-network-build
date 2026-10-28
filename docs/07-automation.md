@@ -12,6 +12,7 @@
 | Playbook | What it does |
 |---|---|
 | `ansible/update.yml` | Refreshes the apt cache, upgrades packages one host at a time (`serial: 1`), compares the running kernel with the newest installed kernel, and prints a one-line report per host (packages upgraded, reboot required or not). Hosts that fail or are unreachable show up as `NO DATA` in the report. |
+| `ansible/harden_ssh.yml` | SSH hardening: drop-in `sshd_config.d/01-hardening.conf` (password and keyboard-interactive login off, root login off). The file is validated with `sshd -t` before it is written, sshd is reloaded (not restarted), hosts are changed one at a time and key-based reachability is checked after each host. |
 
 | `ansible/audit.yml` | Read-only security audit per host: effective sshd settings (root login, password authentication), listening ports compared with a per-host baseline (unexpected and missing ports), pending security updates. Prints `PASS` or `FAIL` with reasons. |
 | `ansible/node_exporter.yml` | Installs and starts `prometheus-node-exporter` on the monitoring VM (idempotent). |
@@ -37,7 +38,7 @@ ansible-playbook update.yml --ask-become-pass
 
 | Finding | Hosts | Decision |
 |---|---|---|
-| `PasswordAuthentication yes` | all | Open. To be disabled during hardening, only after key login is verified from every admin machine |
+| `PasswordAuthentication yes` | all | Fixed with `harden_ssh.yml`: password login is off, key-only login verified from the admin laptop. Audit shows `ssh: ok` on all three VMs |
 | UDP 68 and 546 listening | all | DHCP client sockets, accepted in the baseline (documented in the playbook) |
 | Port 9100 missing | monitoring | Real gap: the monitoring server was not monitored. Fixed with `node_exporter.yml` and a new Prometheus target |
 | A random high port seen once | monitoring | Transient socket, gone on re-check |
