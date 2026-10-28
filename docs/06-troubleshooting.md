@@ -53,7 +53,7 @@ Real problems met while building the lab. Each entry: symptom, diagnosis, root c
 ## 9. Unclean power-off of pfSense
 
 - **Effect:** very long boot with filesystem checks.
-- **Mitigation:** UPS recommended; AutoConfigBackup protects the configuration.
+- **Mitigation:** AutoConfigBackup protects the configuration, considering getting UPS in the future.
 
 ## 10. Switching a VM from DHCP to a static address
 
@@ -73,11 +73,3 @@ Real problems met while building the lab. Each entry: symptom, diagnosis, root c
 - `sudo: unable to resolve host`: the hostname is missing in `/etc/hosts` (clone checklist).
 - `PLAY RECAP` hides the useful part; print an explicit per-host report as the last play.
 
-## General method
-
-1. Is the link up and tagged correctly? (`ip link`, `bridge vlan show`)
-2. Is there an address and a gateway?
-3. Does the gateway answer ping?
-4. Does an external IP answer ping?
-5. Does a DNS name resolve?
-6. Capture on both sides and compare with the firewall log.
