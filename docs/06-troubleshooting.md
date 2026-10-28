@@ -72,6 +72,7 @@ Real problems met while building the lab. Each entry: symptom, diagnosis, root c
 - `Could not find the requested service` in `--check` mode: the package was not really installed in a dry run, so a service task cannot find its unit.
 - `sudo: unable to resolve host`: the hostname is missing in `/etc/hosts` (clone checklist).
 - `PLAY RECAP` hides the useful part; print an explicit per-host report as the last play.
+- Disabling password login is safe only after key login is verified from every admin machine; the playbook runs one host at a time and checks reachability after each change.
 
 ## 12. Firewall logs not visible in Grafana
 
@@ -83,11 +84,3 @@ Real problems met while building the lab. Each entry: symptom, diagnosis, root c
 - **Method:** test the chain link by link: `tcpdump` on the VM (packets arrive), Alloy logs (parse errors), plain `{job="pfsense"}` query (data stored), then add parsing.
 - **Lesson:** a part of the chain working (data stored) does not mean the query is right. Check what is actually stored before writing filters.
 
-## General method
-
-1. Is the link up and tagged correctly? (`ip link`, `bridge vlan show`)
-2. Is there an address and a gateway?
-3. Does the gateway answer ping?
-4. Does an external IP answer ping?
-5. Does a DNS name resolve?
-6. Capture on both sides and compare with the firewall log.
