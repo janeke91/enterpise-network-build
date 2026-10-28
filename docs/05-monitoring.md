@@ -6,7 +6,7 @@ Prometheus (pull model) runs in Docker on the `monitoring` VM (10.10.40.10, VLAN
 
 | Job | Target | Label |
 |---|---|---|
-| proxmox | 10.10.10.3:9100 | |
+| proxmox | 10.10.10.3:9100 | proxmox |
 | vms | 10.10.20.10:9100 | test-infra |
 | vms | 10.10.30.10:9100 | dmz |
 | vms | 10.10.40.10:9100 | monitoring |
