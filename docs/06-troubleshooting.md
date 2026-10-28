@@ -53,7 +53,7 @@ Real problems met while building the lab. Each entry: symptom, diagnosis, root c
 ## 9. Unclean power-off of pfSense
 
 - **Effect:** very long boot with filesystem checks.
-- **Mitigation:** AutoConfigBackup protects the configuration, considering getting UPS in the future.
+- **Mitigation:** UPS recommended; AutoConfigBackup protects the configuration.
 
 ## 10. Switching a VM from DHCP to a static address
 
@@ -73,3 +73,21 @@ Real problems met while building the lab. Each entry: symptom, diagnosis, root c
 - `sudo: unable to resolve host`: the hostname is missing in `/etc/hosts` (clone checklist).
 - `PLAY RECAP` hides the useful part; print an explicit per-host report as the last play.
 
+## 12. Firewall logs not visible in Grafana
+
+- **Symptom:** Alloy logged `expecting a version value in the range 1-999`, later Explore showed "No data" for a parsing query.
+- **Root causes (three):**
+  1. pfSense sent the old BSD syslog format (RFC 3164) while Alloy expects RFC 5424. Fix: Status > System Logs > Settings > Log Message Format = RFC 5424.
+  2. Alloy removes the syslog header, so the stored line starts with the rule number. A query that searched for the word `filterlog` matched nothing.
+  3. A LogQL `regexp` pattern must be inside quotes or backticks; without them the editor shows a red underline.
+- **Method:** test the chain link by link: `tcpdump` on the VM (packets arrive), Alloy logs (parse errors), plain `{job="pfsense"}` query (data stored), then add parsing.
+- **Lesson:** a part of the chain working (data stored) does not mean the query is right. Check what is actually stored before writing filters.
+
+## General method
+
+1. Is the link up and tagged correctly? (`ip link`, `bridge vlan show`)
+2. Is there an address and a gateway?
+3. Does the gateway answer ping?
+4. Does an external IP answer ping?
+5. Does a DNS name resolve?
+6. Capture on both sides and compare with the firewall log.
