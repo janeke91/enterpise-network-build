@@ -13,29 +13,6 @@ A small-office network built on real hardware: a pfSense firewall, a VLAN-capabl
 
 ![Network topology: pfSense, Tenda switch, Proxmox with VLAN-aware bridge and VMs](diagrams/topology.png)
 
-Logical view (Mermaid):
-
-```mermaid
-flowchart TB
-    Internet((Internet)) --- ISP["ISP router"]
-    ISP --- FW
-
-    subgraph FWBOX["pfSense CE 2.7.2 (Celeron J1900, 4x Intel I226-V)"]
-        FW["igc0 WAN (DHCP from the ISP router)<br/>igc1 trunk, VLAN 10/20/30/40"]
-    end
-
-    FW ==>|"802.1Q trunk"| SW["Tenda TEG2205D<br/>managed switch"]
-
-    SW ==>|"802.1Q trunk"| PVE
-    SW ---|"access, VLAN 10"| LAP["Admin laptop<br/>10.10.10.10"]
-
-    subgraph PVE["Proxmox VE host 10.10.10.3 (vmbr0.10), VLAN-aware bridge vmbr0"]
-        V1["test-infra<br/>VLAN 20<br/>10.10.20.10"]
-        V2["dmz<br/>VLAN 30<br/>10.10.30.10"]
-        V3["monitoring<br/>VLAN 40<br/>10.10.40.10<br/>Prometheus + Grafana"]
-    end
-```
-
 ## Security zones
 
 | Zone | VLAN | Subnet | Gateway | Purpose |
@@ -88,7 +65,7 @@ pfSense CE 2.7.2, Proxmox VE, Debian 13, Docker, Prometheus, Grafana, node_expor
 - [x] Replace MGMT *pass any* with explicit rules
 - [ ] Active Directory (Windows Server, domain `corp.lab`) in INFRA
 - [x] Ansible control VM (`ansible`, MGMT): update and audit playbooks with reports
-- [ ] Ansible: hardening (SSH key-only), Lynis score, backup playbooks
+- [x] Ansible: hardening (SSH key-only), Lynis score, backup playbooks
 - [x] Firewall log pipeline: pfSense syslog, Alloy, Loki, Grafana dashboard
 - [ ] Backup storage on a separate HDD (pending USB-SATA adapter)
 - [ ] Admin WireGuard remote access into MGMT
