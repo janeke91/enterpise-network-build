@@ -72,3 +72,4 @@ pfSense CE 2.7.2, Proxmox VE, Debian 13, Docker, Prometheus, Grafana, node_expor
 - [ ] Suricata IDS on the DMZ
 - [ ] DMZ service published through a Cloudflare Tunnel
 - [ ] Hybrid cloud connectivity (site-to-site VPN, then BGP) as a separate project
+- [ ] Alerting system in moniroting
