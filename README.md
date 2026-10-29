@@ -60,7 +60,7 @@ All zones may also use the DNS resolver and answer ICMP on their own gateway add
 
 pfSense CE 2.7.2, Proxmox VE, Debian 13, Docker, Prometheus, Grafana, node_exporter, 802.1Q VLANs.
 
-## Roadmap
+## Future plans
 
 - [x] Replace MGMT *pass any* with explicit rules
 - [ ] Active Directory (Windows Server, domain `corp.lab`) in INFRA
