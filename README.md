@@ -1,12 +1,14 @@
-# Enterprise Network Segmentation & Firewall Lab
+# Enterprise Network Infrastructure
 
-A small-office network built on real hardware: a pfSense firewall, a VLAN-capable managed switch and a Proxmox hypervisor. The lab implements zone-based segmentation with least-privilege firewall policy, centralized monitoring and documented verification of every rule.
+A small-office network built on real hardware: a pfSense firewall, a VLAN-capable managed switch and a Proxmox hypervisor. The lab implements zone-based segmentation with least-privilege firewall policy, centralized monitoring and documented verification of every rule. It also includes Ansible automation and an Active Directory domain.
 
 ## Goals
 
 - Segment a flat network into four security zones using 802.1Q VLANs.
 - Enforce inter-zone policy on a stateful firewall (default deny, narrow exceptions).
 - Monitor every node (hypervisor, VMs, firewall) with Prometheus and Grafana.
+- Automate routine administration with Ansible: patching, audit, SSH hardening, backups.
+- Run a Windows domain the way a small company would: OUs, groups, Group Policy, helpdesk delegation, role-based file access.
 - Prove the policy works with documented tests, and record the problems found along the way.
 
 ## Topology
