@@ -1,0 +1,82 @@
+---
+# Back up every VM on the Proxmox host to the backup disk, verify the result,
+# and (only when asked) shut the host down afterwards.
+#
+#   ansible-playbook backup.yml                          # backup + report
+#   ansible-playbook backup.yml -e shutdown_after=true   # backup, then shut down if all OK
+#
+# Safety rules built in:
+#   - the backup disk must be mounted (otherwise vzdump would fill the system SSD)
+#   - every running/stopped VM must have a fresh, non-empty archive
+#   - the host is shut down only when every check passed
+- name: Back up all VMs (optional shutdown afterwards)
+  hosts: proxmox_hosts
+  gather_facts: false
+  vars:
+    backup_storage: back-up-HDD   # storage ID in Proxmox (see: pvesm status)
+    backup_dir: /mnt/backup
+    shutdown_after: false
+  tasks:
+    - name: Check that the backup disk is mounted
+      ansible.builtin.command: mountpoint -q {{ backup_dir }}
+      changed_when: false
+      check_mode: false
+
+    - name: Create a time marker (archives newer than this are from this run)
+      ansible.builtin.file:
+        path: /tmp/ansible-backup-marker
+        state: touch
+        mode: "0644"
+      changed_when: false
+      when: not ansible_check_mode
+
+    - name: List VM IDs on this host
+      ansible.builtin.shell: "qm list | awk 'NR>1 {print $1}' | sort -n"
+      register: vm_ids
+      changed_when: false
+      check_mode: false
+
+    - name: Run vzdump for all VMs (snapshot mode, zstd)
+      ansible.builtin.command: >-
+        vzdump --all 1 --storage {{ backup_storage }}
+        --mode snapshot --compress zstd --quiet 1
+      async: 7200
+      poll: 20
+      when: not ansible_check_mode
+
+    - name: Find the new archives (non-empty)
+      ansible.builtin.shell: >-
+        find {{ backup_dir }}/dump -name 'vzdump-qemu-*.zst'
+        -newer /tmp/ansible-backup-marker -size +1M
+        | sed -E 's/.*vzdump-qemu-([0-9]+)-.*/\1/' | sort -n | uniq
+      register: new_archives
+      changed_when: false
+      when: not ansible_check_mode
+
+    - name: Work out which VMs have no fresh archive
+      ansible.builtin.set_fact:
+        missing_backups: "{{ vm_ids.stdout_lines | difference(new_archives.stdout_lines) }}"
+      when: not ansible_check_mode
+
+    - name: Report
+      ansible.builtin.debug:
+        msg: >-
+          {{ 'BACKUP OK' if missing_backups | length == 0 else 'BACKUP FAILED' }}
+          | VMs: {{ vm_ids.stdout_lines | join(', ') }}
+          | with fresh archive: {{ new_archives.stdout_lines | join(', ') }}
+          | missing: {{ missing_backups | join(', ') or 'none' }}
+      when: not ansible_check_mode
+
+    - name: Stop here if any VM was not backed up
+      ansible.builtin.assert:
+        that:
+          - missing_backups | length == 0
+        fail_msg: "Not every VM has a fresh backup, the host will NOT be shut down"
+        success_msg: "All VMs backed up"
+      when: not ansible_check_mode
+
+    - name: Schedule shutdown in one minute (only after a fully successful backup)
+      ansible.builtin.command: shutdown -P +1 "Planned shutdown after backup (Ansible)"
+      when:
+        - not ansible_check_mode
+        - shutdown_after | bool
