@@ -54,11 +54,12 @@ All zones may also use the DNS resolver and answer ICMP on their own gateway add
 | [05 Monitoring](docs/05-monitoring.md) | Prometheus, Grafana, node_exporter |
 | [06 Troubleshooting](docs/06-troubleshooting.md) | Real problems, root causes and fixes |
 | [07 Automation](docs/07-automation.md) | Ansible control node, playbooks, design decisions |
+| [08 Active Directory](docs/08-active-directory.md) | Domain corp.lab, OUs, Group Policy, delegation, file share |
 | [configs/](configs/) | Sanitized configuration files |
 
 ## Tech stack
 
-pfSense CE 2.7.2, Proxmox VE, Debian 13, Docker, Prometheus, Grafana, node_exporter, 802.1Q VLANs.
+pfSense CE 2.7.2, Proxmox VE, Debian 13, Windows Server 2022 (Active Directory, DNS, Group Policy), Windows 11, Docker, Prometheus, Grafana, Loki, node_exporter, Ansible, 802.1Q VLANs.
 
 ## Future plans
 
