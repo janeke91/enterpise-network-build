@@ -37,7 +37,7 @@ Admin workstation: 10.10.10.10 (static DHCP mapping). Ansible control node `ansi
 | 7 | Block (log) | any | MGMT subnet | RFC1918 | any | "block internal networks" |
 | 8 | Pass | TCP | MGMT subnet | any | web_ports | Updates |
 | 9 | Pass | UDP | MGMT subnet | any | 123 | NTP |
-
+| 10 | Pass | TCP | ADMIN_HOSTS | 10.10.20.5 | 3389 | RDP to dc-01 |
 The former temporary *pass any* rule was removed. pfSense's built-in anti-lockout rule only covers the LAN interface, which no longer has an address, so rule 1 is what keeps the GUI reachable: keep it first and keep a config backup and console access before editing MGMT rules.
 
 Additional aliases: `SSH_TARGETS` (10.10.20.10, 10.10.30.10, 10.10.40.10), `proxmox_ports` (22, 8006), `monitoring_ports` (3000, 9090).

@@ -63,7 +63,7 @@ pfSense CE 2.7.2, Proxmox VE, Debian 13, Docker, Prometheus, Grafana, node_expor
 ## Future plans
 
 - [x] Replace MGMT *pass any* with explicit rules
-- [ ] Active Directory (Windows Server, domain `corp.lab`) in INFRA
+- [x] Active Directory (Windows Server, domain `corp.lab`) in INFRA
 - [x] Ansible control VM (`ansible`, MGMT): update and audit playbooks with reports
 - [x] Ansible: hardening (SSH key-only), Lynis score, backup playbooks
 - [x] Firewall log pipeline: pfSense syslog, Alloy, Loki, Grafana dashboard

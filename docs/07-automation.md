@@ -16,6 +16,7 @@
 
 | `ansible/audit.yml` | Read-only security audit per host: effective sshd settings (root login, password authentication), listening ports compared with a per-host baseline (unexpected and missing ports), pending security updates. Prints `PASS` or `FAIL` with reasons. |
 | `ansible/node_exporter.yml` | Installs and starts `prometheus-node-exporter` on the monitoring VM (idempotent). |
+| `ansible/backup.yml` | Backs up every VM on the Proxmox host with `vzdump` (snapshot mode, zstd) to the external disk. Refuses to run if the disk is not mounted, verifies that every VM has a fresh non-empty archive, and shuts the host down afterwards only when asked (`-e shutdown_after=true`) and only if all backups passed. |
 
 Run:
 
