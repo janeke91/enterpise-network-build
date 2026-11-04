@@ -67,7 +67,7 @@ pfSense CE 2.7.2, Proxmox VE, Debian 13, Docker, Prometheus, Grafana, node_expor
 - [x] Ansible control VM (`ansible`, MGMT): update and audit playbooks with reports
 - [x] Ansible: hardening (SSH key-only), Lynis score, backup playbooks
 - [x] Firewall log pipeline: pfSense syslog, Alloy, Loki, Grafana dashboard
-- [ ] Backup storage on a separate HDD (pending USB-SATA adapter)
+- [x] Backup storage on a separate HDD (pending USB-SATA adapter)
 - [ ] Admin WireGuard remote access into MGMT
 - [ ] Suricata IDS on the DMZ
 - [ ] DMZ service published through a Cloudflare Tunnel
