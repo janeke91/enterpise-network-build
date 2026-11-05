@@ -74,5 +74,5 @@ pfSense CE 2.7.2, Proxmox VE, Debian 13, Windows Server 2022 (Active Directory, 
 - [ ] Admin WireGuard remote access into MGMT
 - [ ] Suricata IDS on the DMZ
 - [ ] DMZ service published through a Cloudflare Tunnel
-- [ ] Hybrid cloud connectivity (site-to-site VPN, then BGP) as a separate project
+- [ ] Hybrid cloud connectivity (site-to-site VPN, then BGP)
 - [ ] Alerting system in moniroting
